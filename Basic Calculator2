@@ -1,0 +1,143 @@
+#include <vector>
+#include <sstream>
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+class Solution {
+public:
+    int calculate(string s) {
+        char c;
+        int a;
+        int b;
+        bool prio = false;
+        vector<int> operand;
+        vector<char> op;
+        bool num = false;
+        bool conti = false;
+        string s2;
+        
+        for (int i = 0; i < s.length(); i++) {
+            c = s[i];
+            s2 = s[i];
+           // cout << s2 << endl;
+            if ((!(c <= '9' && c >= '0')) && (!(c == '+' || c == '-' || c == '*' || c == '/'))) continue;
+            if (prio) {
+             //   cout << "prio " << endl;
+                if (i+1 < s.length()) {
+                    char c2 = s[i+1];
+                   if(c2<='9'&&c2>='0') {
+                        if(!conti){
+                            istringstream ss(s2);
+                            ss >> b;
+                        }
+                      //  cout << "b is :"<<b<<endl;
+                        string s3;
+                        s3 = s[i+1];
+                        istringstream ss2(s3);
+                        int c;
+                        ss2>>c;
+                 //       cout << "c is" << c<<endl;
+                        b = b*10 + c;
+                 //       cout <<"b is :"<<b << endl;
+                        conti = true;
+                        continue;
+                    }else if(!conti){
+                        istringstream ss(s2);
+                        ss>>b;
+                    }
+                } else if(!conti){
+                    istringstream ss(s2);
+                    ss >> b;
+                }
+                conti = false;
+           //     cout << "prio" << endl;
+                a = operand.back();
+                operand.pop_back();
+                char op2;
+                op2 = op.back();
+           //     cout << "op2 : " << op2<<endl;
+           //     cout << "a : " << a << endl;
+         //       cout << "b : " << b << endl;
+                if (op2 == '*') {
+                    operand.push_back(a*b);
+                } else {
+                    cout << b<<endl;
+                    operand.push_back(a/b);
+                }
+                op.pop_back();
+                prio = false;
+                num = false;
+                continue;
+            }
+            if (c == '*' || c == '/') {
+         //       cout << "* /" <<endl;
+                op.push_back(c);
+                conti = false;
+                num = false;
+                prio = true;
+            } else if (c == '+' || c == '-') {
+         //       cout << "+ - " <<endl;
+                conti = false;
+                op.push_back(c);
+                num = false;
+            } else {
+      //          cout << "number" << endl;
+                istringstream ss(s2);
+                conti = false;
+                ss >> b;
+                conti = false;
+           //     cout << "number b is : ";
+                cout << b;
+                cout << endl;
+                if (num) {
+                    a = operand.back();
+                    operand.pop_back();
+                    operand.push_back(a*10 + b);
+                } else {
+                operand.push_back(b);
+                }
+                num = true;
+            }
+        }
+//        operand.shrink_to_fit();
+//        op.shrink_to_fit();
+//        cout << "Operand size : " << operand.size()<< endl;
+//        cout << "op size : "<<op.size()<<endl;
+//        
+//        for (vector<int>::iterator it = operand.begin(); it != operand.end(); it++) {
+//            cout << *it << endl;
+//          //  cout << "1"<< endl;
+//        }
+//        
+//        for (vector<char>::iterator it = op.begin(); it != op.end(); it++) {
+//            cout << *it<< endl;
+//        //    cout << "2"<<endl;
+//        }
+        reverse(op.begin(),op.end());
+        reverse(operand.begin(), operand.end());
+        
+        while (op.size()) {
+            a = operand.back();
+            operand.pop_back();
+            b = operand.back();
+        //    cout << "in calculating" << endl;
+    //        cout << " a is : " << a << endl;
+  //          cout << " b is : " << b << endl;
+            operand.pop_back();
+            if (op.back() == '+') {
+                operand.push_back(b+a);
+            } else {
+                operand.push_back(a-b);
+            }
+            op.pop_back();
+        }
+//        for (int i = 0; i < op.size(); i++) {
+//            
+//        }
+        return operand.back();
+    }
+};
+
+
